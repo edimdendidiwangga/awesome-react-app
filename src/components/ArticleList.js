@@ -65,6 +65,7 @@ class ArticleList extends React.Component{
 	}
 
 	render() {
+
 	return (
 		<div>
 		<Link to="/add" ><button >Create Article</button></Link>
@@ -99,7 +100,7 @@ class ArticleList extends React.Component{
 }
 
 const mapStateToProps = state => ({
-	articles: state
+	articles: state.data
 })
 const mapDispatchToProps = dispatch => ({
 	fetchArticles: () => dispatch(fetchArticles()),

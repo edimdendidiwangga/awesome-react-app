@@ -1,51 +1,58 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {editArticle} from '../actions/articleAction'
+import { connect } from 'react-redux'
+import { editArticle, getById } from '../actions/articleAction'
 
 class ArticleEdit extends React.Component {
   constructor(props){
     super(props)
     this.state = {
 			form : {
-				id: 0,
+				id: '',
 				title : '',
 				author : '',
 				description : '',
 				imageUrl : ''
 			}
-    }
   }
+}
 
-  componentDidMount(){
-    this.props.
-  }
+	componentWillReceiveProps(nextProps){
+		console.log("nextProps", nextProps.articles.data[0])
+		let newState = {
+			form : nextProps.articles.data[0]
+		}
+		this.setState(newState)
+	}
 
-  handleEditChange(field, e){
-    // let newState = {
-		//
-    //     ...this.state
-    //
-    // }
-    // newState.form[field] = e.target.value
-    // this.setState(newState)
-		const post = Object.assign({}, this.state.form, {[field]: e.target.value});
-    this.setState(Object.assign({}, this.state, {post}));
+	componentDidMount(){
+		this.props.getById(this.props.match.params.id)
+	}
+
+  handleEditChange(e){
+		let { name, value } = e.target
+		let { form } = this.state
+		let newState = {
+			form: {
+				...form
+			}
+		}
+		newState.form[name] = value
+		this.setState(newState)
   }
 
   render() {
+		console.log('form', this.state.form)
     return (
       <div>
-			<p>{this.props.match.params.id}</p>
         <form>
-
           <label>
             Title
           </label>
           <input
 	          name="title"
 	          type="text"
-	          value={this.props.title}
-	          onChange={this.handleEditChange.bind(this, 'title')}
+						value={this.state.form.title}
+	          onChange={this.handleEditChange.bind(this)}
 					/>
           <br />
 					<label>
@@ -54,8 +61,8 @@ class ArticleEdit extends React.Component {
           <input
           name="author"
           type="text"
-          value={this.props.author}
-          onChange={this.handleEditChange.bind(this, 'author')} />
+					value={this.state.form.author}
+          onChange={this.handleEditChange.bind(this)} />
           <br />
           <label>
             Description
@@ -63,8 +70,8 @@ class ArticleEdit extends React.Component {
           <input
           name="description"
           type="text"
-          value={this.props.description}
-          onChange={this.handleEditChange.bind(this, 'description')} />
+					value={this.state.form.description}
+          onChange={this.handleEditChange.bind(this)} />
           <br />
 					<label>
             imageUrl
@@ -72,17 +79,14 @@ class ArticleEdit extends React.Component {
           <input
 	          name="imageUrl"
 	          type="text"
-	          value={this.props.imageUrl}
-	          onChange={this.handleEditChange.bind(this, 'imageUrl')}
+	          value={this.state.form.imageUrl}
+	          onChange={this.handleEditChange.bind(this)}
 					/>
           <br />
           <button
           type='button'
           onClick={()=>{
-            let {id, title, author, description, imageUrl } =this.props
-            this.props.editArticle({
-              id, title, author, description, imageUrl
-            })
+            this.props.editArticle(this.state.form)
           }}>
             Update
           </button>
@@ -91,10 +95,13 @@ class ArticleEdit extends React.Component {
     )
   }
 }
+const mapStateToProps = state => ({
+	articles: state
+})
 
 const mapDispatchToProps = dispatch => ({
   editArticle : data => dispatch(editArticle(data)),
-	
+	getById: id => dispatch(getById(id))
 })
 
-export default connect(null, mapDispatchToProps)(ArticleEdit)
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleEdit)

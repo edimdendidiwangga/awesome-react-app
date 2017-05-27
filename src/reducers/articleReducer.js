@@ -1,10 +1,11 @@
-// const initialState = {
-// 	data : []
-// }
+const initialState = {
+	data : []
+}
 
 const fetchArticles = (state, data) => {
-	// let newState = {...state, data}
-	return data
+	let newState = {...state, data}
+	return newState
+
 }
 
 const addArticle = (state, data) => {
@@ -16,13 +17,15 @@ const addArticle = (state, data) => {
 }
 
 const getById = (state, data) => {
-	let newData = state.data.filter(item => {
-		return item.id === data.id ? data : item
-	})
+	let newState = {
+	 	...state,
+		data: [...state.data, data]
+  }
 	return newState
 }
 
 const editArticle = (state, data) => {
+	console.log("edit",state)
 	let newData = state.data.filter(item => {
 		return item.id === data.id ? data : item
 	})
@@ -50,7 +53,7 @@ const displayLoading = (state, bool) => {
 	return newState
 }
 
-const articleReducer = (state = [], { type, payload }) => {
+const articleReducer = (state = initialState, { type, payload }) => {
 	switch (type) {
 		case 'FETCH_ARTICLES': return fetchArticles(state, payload)
 		case 'FETCH_ARTICLES_SUCCESS': return fetchArticles(state, payload)
